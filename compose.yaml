@@ -1,0 +1,19 @@
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: project1-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: uni_in_class
+      MYSQL_USER: student
+      MYSQL_PASSWORD: studentpassword
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./sql/01-schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      - ./sql/02-data.sql:/docker-entrypoint-initdb.d/02-data.sql:ro
+
+volumes:
+  mysql_data:
