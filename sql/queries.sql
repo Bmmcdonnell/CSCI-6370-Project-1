@@ -1,6 +1,6 @@
 USE uni_in_class;
 
--- Query 1: List instructors, courses, and classrooms
+-- Query 1: List instructors, courses, and classrooms (Nash)
 SELECT
     i.name AS instructor,
     c.title AS course,
@@ -22,7 +22,7 @@ JOIN classroom AS cr
     AND s.room_number = cr.room_number
 LIMIT 50;
 
--- Query 2: List students and their advisors
+-- Query 2: List students and their advisors (Nash)
 SELECT
     s.ID AS student_id,
     s.name AS student,
@@ -34,4 +34,30 @@ FROM student AS s
 LEFT JOIN advisor AS a ON s.ID = a.s_ID
 LEFT JOIN instructor AS i ON a.i_ID = i.ID
 ORDER BY s.dept_name, s.name
+LIMIT 50;
+
+-- Query 3: List students with 20 or more total credits (Brendan)
+SELECT
+    s.ID AS student_id,
+    s.name AS student,
+    s.dept_name AS department,
+    s.tot_cred
+FROM student AS s
+WHERE s.tot_cred >= 20
+ORDER BY s.tot_cred DESC, s.name
+LIMIT 50;
+
+-- Query 4: List advisors who advise students in the History department (Brendan)
+SELECT
+    i.ID AS advisor_id,
+    i.name AS advisor,
+    i.dept_name AS advisor_department,
+    s.ID AS student_id,
+    s.name AS student,
+    s.dept_name AS student_department
+FROM instructor AS i
+JOIN advisor AS a ON i.ID = a.i_ID
+JOIN student AS s ON a.s_ID = s.ID
+WHERE s.dept_name = 'History'
+ORDER BY i.name, s.name
 LIMIT 50;
