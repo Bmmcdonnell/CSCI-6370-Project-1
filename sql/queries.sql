@@ -61,3 +61,30 @@ JOIN student AS s ON a.s_ID = s.ID
 WHERE s.dept_name = 'History'
 ORDER BY i.name, s.name
 LIMIT 50;
+
+-- Query 5: List students, the courses they are taking, and their grades (Ido)
+SELECT
+    s.ID AS student_id,
+    s.name AS student,
+    c.title AS course,
+    t.semester,
+    t.year,
+    t.grade
+FROM student AS s
+JOIN takes AS t ON s.ID = t.ID
+JOIN course AS c ON t.course_id = c.course_id
+ORDER BY s.name, t.year, t.semester
+LIMIT 50;
+
+-- Query 6: List instructors and the courses they teach, along with the offering department (Ido)
+SELECT
+    i.ID AS instructor_id,
+    i.name AS instructor,
+    c.title AS course,
+    c.dept_name AS offering_department,
+    c.credits
+FROM instructor AS i
+JOIN teaches AS t ON i.ID = t.ID
+JOIN course AS c ON t.course_id = c.course_id
+ORDER BY i.name, c.title
+LIMIT 50;
