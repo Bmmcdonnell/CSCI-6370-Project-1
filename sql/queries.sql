@@ -88,3 +88,30 @@ JOIN teaches AS t ON i.ID = t.ID
 JOIN course AS c ON t.course_id = c.course_id
 ORDER BY i.name, c.title
 LIMIT 50;
+
+-- Query 7: List Computer Science students and the courses they have taken (Sai)
+SELECT
+    s.name AS student,
+    c.title AS course,
+    t.semester,
+    t.year,
+    t.grade
+FROM student AS s
+JOIN takes AS t ON s.ID = t.ID
+JOIN course AS c ON t.course_id = c.course_id
+WHERE s.dept_name = 'Comp. Sci.'
+ORDER BY s.name
+LIMIT 50;
+
+-- Query 8: List instructors who teach 4-credit courses (Sai)
+SELECT
+    i.name AS instructor,
+    c.title AS course,
+    c.dept_name AS course_department,
+    c.credits
+FROM instructor AS i
+JOIN teaches AS t ON i.ID = t.ID
+JOIN course AS c ON t.course_id = c.course_id
+WHERE c.credits = 4
+ORDER BY i.name
+LIMIT 50;
