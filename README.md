@@ -1,6 +1,6 @@
 CSCI 6370 - Project 1
 
-Group Number: [Enter Group Number]
+Group Number: 3
 
 Team Members:
 - Nash Carroll
