@@ -1,3 +1,2 @@
-git rm --cached proj01_data.sql proj01_ddl.sql
-git add .gitignore
-git commit -m "Ignore local database files"
+target/
+*.class
