@@ -575,5 +575,70 @@ public class Driver {
                         "advisor_department"));
 
         query6Result.print();
+
+        /*
+         * QUERY 3 (Brendan)
+         *
+         * Which advisors advise History students with at least 90
+         * total credits, and what department is each advisor in?
+         *
+         * Tables:
+         * student + advisor + instructor
+         */
+
+        System.out.println();
+        System.out.println("QUERY 7:");
+        System.out.println(
+                "Which advisors advise History students with at least 90 "
+                        + "total credits, and what department is each advisor in?");
+        System.out.println();
+
+        int studentDeptIndexQ7 = student.getAttrIndex("dept_name");
+        int studentTotCredIndexQ7 = student.getAttrIndex("tot_cred");
+
+        Relation historyStudentsQ7 = ra.select(
+                student,
+                row -> row.get(studentDeptIndexQ7)
+                        .getAsString()
+                        .equals("History")
+                        &&
+                        row.get(studentTotCredIndexQ7)
+                                .getAsInt() >= 90);
+
+        Relation studentInfoQ7 = ra.project(
+                historyStudentsQ7,
+                List.of("ID", "name", "dept_name"));
+
+        studentInfoQ7 = ra.rename(
+                studentInfoQ7,
+                List.of("ID", "name", "dept_name"),
+                List.of("s_ID", "student", "student_department"));
+
+        Relation studentAdvisorQ7 = ra.join(
+                studentInfoQ7,
+                advisor);
+
+        Relation instructorInfoQ7 = ra.project(
+                instructor,
+                List.of("ID", "name", "dept_name"));
+
+        instructorInfoQ7 = ra.rename(
+                instructorInfoQ7,
+                List.of("ID", "name", "dept_name"),
+                List.of("i_ID", "advisor", "advisor_department"));
+
+        Relation query7Joined = ra.join(
+                studentAdvisorQ7,
+                instructorInfoQ7);
+
+        Relation query7Result = ra.project(
+                query7Joined,
+                List.of(
+                        "student",
+                        "student_department",
+                        "advisor",
+                        "advisor_department"));
+
+        query7Result.print();
     }
 }
