@@ -577,7 +577,7 @@ public class Driver {
         query6Result.print();
 
         /*
-         * QUERY 3 (Brendan)
+         * QUERY 7 (Brendan)
          *
          * Which advisors advise History students with at least 90
          * total credits, and what department is each advisor in?
