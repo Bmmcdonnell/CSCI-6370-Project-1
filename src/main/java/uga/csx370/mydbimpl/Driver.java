@@ -37,7 +37,6 @@ public class Driver {
 
         student.loadData("student_export.csv");
 
-
         // Takes table
         Relation takes = new RelationBuilder()
                 .attributeNames(List.of(
@@ -58,7 +57,6 @@ public class Driver {
 
         takes.loadData("takes_export.csv");
 
-
         // Course table
         Relation course = new RelationBuilder()
                 .attributeNames(List.of(
@@ -75,7 +73,6 @@ public class Driver {
 
         course.loadData("course_export.csv");
 
-
         // Instructor table
         Relation instructor = new RelationBuilder()
                 .attributeNames(List.of(
@@ -91,7 +88,6 @@ public class Driver {
                 .build();
 
         instructor.loadData("instructor_export.csv");
-
 
         // Teaches table
         Relation teaches = new RelationBuilder()
@@ -111,7 +107,6 @@ public class Driver {
 
         teaches.loadData("teaches_export.csv");
 
-
         /*
          * QUERY 1 (Sai)
          *
@@ -126,7 +121,7 @@ public class Driver {
         System.out.println("QUERY 1:");
         System.out.println(
                 "Which Computer Science students earned an A+ in 2010, "
-                + "and what courses did they earn it in?");
+                        + "and what courses did they earn it in?");
         System.out.println();
 
         int studentDeptIndex = student.getAttrIndex("dept_name");
@@ -134,55 +129,46 @@ public class Driver {
         Relation csStudents = ra.select(
                 student,
                 row -> row.get(studentDeptIndex)
-                          .getAsString()
-                          .equals("Comp. Sci.")
-        );
+                        .getAsString()
+                        .equals("Comp. Sci."));
 
         Relation studentInfo = ra.project(
                 csStudents,
-                List.of("ID", "name")
-        );
+                List.of("ID", "name"));
 
         studentInfo = ra.rename(
                 studentInfo,
                 List.of("name"),
-                List.of("student")
-        );
+                List.of("student"));
 
         int gradeIndex = takes.getAttrIndex("grade");
         int takesYearIndex = takes.getAttrIndex("year");
 
         Relation aPlus2010 = ra.select(
                 takes,
-                row ->
-                        row.get(gradeIndex)
-                           .getAsString()
-                           .equals("A+")
+                row -> row.get(gradeIndex)
+                        .getAsString()
+                        .equals("A+")
                         &&
                         row.get(takesYearIndex)
-                           .getAsInt() == 2010
-        );
+                                .getAsInt() == 2010);
 
         Relation studentTakes = ra.join(
                 studentInfo,
-                aPlus2010
-        );
+                aPlus2010);
 
         Relation courseInfo = ra.project(
                 course,
-                List.of("course_id", "title")
-        );
+                List.of("course_id", "title"));
 
         courseInfo = ra.rename(
                 courseInfo,
                 List.of("title"),
-                List.of("course")
-        );
+                List.of("course"));
 
         Relation query1Joined = ra.join(
                 studentTakes,
-                courseInfo
-        );
+                courseInfo);
 
         Relation query1Result = ra.project(
                 query1Joined,
@@ -191,11 +177,9 @@ public class Driver {
                         "course",
                         "semester",
                         "year",
-                        "grade")
-        );
+                        "grade"));
 
         query1Result.print();
-
 
         /*
          * QUERY 2 (Sai)
@@ -214,35 +198,30 @@ public class Driver {
 
         Relation instructorInfo = ra.project(
                 instructor,
-                List.of("ID", "name")
-        );
+                List.of("ID", "name"));
 
         instructorInfo = ra.rename(
                 instructorInfo,
                 List.of("name"),
-                List.of("instructor")
-        );
+                List.of("instructor"));
 
         int teachesYearIndex = teaches.getAttrIndex("year");
 
         Relation teaches2010 = ra.select(
                 teaches,
                 row -> row.get(teachesYearIndex)
-                          .getAsInt() == 2010
-        );
+                        .getAsInt() == 2010);
 
         Relation instructorTeaches = ra.join(
                 instructorInfo,
-                teaches2010
-        );
+                teaches2010);
 
         int creditsIndex = course.getAttrIndex("credits");
 
         Relation fourCreditCourses = ra.select(
                 course,
                 row -> row.get(creditsIndex)
-                          .getAsInt() == 4
-        );
+                        .getAsInt() == 4);
 
         Relation fourCreditCourseInfo = ra.project(
                 fourCreditCourses,
@@ -250,19 +229,16 @@ public class Driver {
                         "course_id",
                         "title",
                         "dept_name",
-                        "credits")
-        );
+                        "credits"));
 
         fourCreditCourseInfo = ra.rename(
                 fourCreditCourseInfo,
                 List.of("title", "dept_name"),
-                List.of("course", "course_department")
-        );
+                List.of("course", "course_department"));
 
         Relation query2Joined = ra.join(
                 instructorTeaches,
-                fourCreditCourseInfo
-        );
+                fourCreditCourseInfo);
 
         Relation query2Result = ra.project(
                 query2Joined,
@@ -272,9 +248,117 @@ public class Driver {
                         "course_department",
                         "credits",
                         "semester",
-                        "year")
-        );
+                        "year"));
 
         query2Result.print();
+
+        /*
+         * QUERY 1 (Ido)
+         *
+         * For each student, which courses are they taking and
+         * what grade did they receive?
+         *
+         * Tables:
+         * student + takes + course
+         */
+
+        System.out.println();
+        System.out.println("QUERY 3:");
+        System.out.println(
+                "For each student, which courses are they taking "
+                        + "and what grade did they receive?");
+        System.out.println();
+
+        Relation studentNamesQ3 = ra.project(
+                student,
+                List.of("ID", "name"));
+
+        studentNamesQ3 = ra.rename(
+                studentNamesQ3,
+                List.of("name"),
+                List.of("student"));
+
+        Relation courseNamesQ3 = ra.project(
+                course,
+                List.of("course_id", "title"));
+
+        courseNamesQ3 = ra.rename(
+                courseNamesQ3,
+                List.of("title"),
+                List.of("course"));
+
+        Relation studentTakesQ3 = ra.join(
+                studentNamesQ3,
+                takes);
+
+        Relation query3Joined = ra.join(
+                studentTakesQ3,
+                courseNamesQ3);
+
+        Relation query3Result = ra.project(
+                query3Joined,
+                List.of(
+                        "student",
+                        "course",
+                        "semester",
+                        "year",
+                        "grade"));
+
+        query3Result.print();
+
+        /*
+         * QUERY 2 (Ido)
+         *
+         * For each instructor, which courses do they teach and
+         * what department offers those courses?
+         *
+         * Tables:
+         * instructor + teaches + course
+         */
+
+        System.out.println();
+        System.out.println("QUERY 4:");
+        System.out.println(
+                "For each instructor, which courses do they teach "
+                        + "and what department offers those courses?");
+        System.out.println();
+
+        Relation instructorNamesQ4 = ra.project(
+                instructor,
+                List.of("ID", "name"));
+
+        instructorNamesQ4 = ra.rename(
+                instructorNamesQ4,
+                List.of("name"),
+                List.of("instructor"));
+
+        Relation courseInfoQ4 = ra.project(
+                course,
+                List.of("course_id", "title", "dept_name", "credits"));
+
+        courseInfoQ4 = ra.rename(
+                courseInfoQ4,
+                List.of("title", "dept_name"),
+                List.of("course", "offering_department"));
+
+        Relation instructorTeachesQ4 = ra.join(
+                instructorNamesQ4,
+                teaches);
+
+        Relation query4Joined = ra.join(
+                instructorTeachesQ4,
+                courseInfoQ4);
+
+        Relation query4Result = ra.project(
+                query4Joined,
+                List.of(
+                        "instructor",
+                        "course",
+                        "offering_department",
+                        "credits",
+                        "semester",
+                        "year"));
+
+        query4Result.print();
     }
 }
